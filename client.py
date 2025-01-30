@@ -13,3 +13,6 @@ prompt = st.chat_input('Pass your prompt here!')
 if prompt:
     st.chat_message('user').markdown(prompt)
     st.session_state.messages.append({'role': 'user', 'content': prompt})
+    response = 'Hello! I am your Assistant!'
+    st.chat_message('assistant').markdown(response)
+    st.session_state.messages.append({'role': 'assistant', 'content': response})
