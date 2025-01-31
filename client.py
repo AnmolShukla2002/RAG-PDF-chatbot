@@ -19,7 +19,7 @@ for message in st.session_state.messages:
 
 @st.cache_resource
 def get_vectorstore():
-    pdf_name = ""
+    pdf_name = "./socialmedia.pdf"
     loaders = [PyPDFLoader(pdf_name)]
     index = VectorstoreIndexCreator(
         embedding = HuggingFaceEmbeddings(model_name = 'all-MiniLM-L12-v2'),
@@ -42,9 +42,24 @@ if prompt:
         api_key=os.environ.get('GROQ_API_KEY'),  
         model_name=model
     )
+    
+    try:
+        vectorstore = get_vectorstore()
+        if vectorstore is None:
+            st.error('Vectorstore not found or failed to load vectorstore')
+        
+        chain = RetrievalQA.from_chain_type(
+            llm=groq_chat,
+            chain_type='stuff',
+            retriever=vectorstore.as_retriever(search_kwargs={'top_k': 3}),
+            return_source_documents=True
+        )
 
-    chain = groq_system_prompt | groq_chat | StrOutputParser()
-    response = chain.invoke({"user_prompt": prompt}) 
+        result = chain({"query": prompt})
+        response = result["result"] 
 
-    st.chat_message('assistant').markdown(response)
-    st.session_state.messages.append({'role': 'assistant', 'content': response})
+        st.chat_message('assistant').markdown(response)
+        st.session_state.messages.append({'role': 'assistant', 'content': response})
+    
+    except Exception as e:
+        st.error(f'Error: [{str(e)}]')
