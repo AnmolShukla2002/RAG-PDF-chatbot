@@ -3,6 +3,11 @@ import os
 from langchain_groq import ChatGroq
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
+from langchain.embeddings import HuggingFaceEmbeddings
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.document_loaders import PyPDFLoader
+from langchain.indexes import VectorstoreIndexCreator
+from langchain.chains import RetrievalQA
 
 st.title('RAG Chatbot!')
 
@@ -11,6 +16,16 @@ if 'messages' not in st.session_state:
 
 for message in st.session_state.messages:
     st.chat_message(message['role']).markdown(message['content'])
+
+@st.cache_resource
+def get_vectorstore():
+    pdf_name = ""
+    loaders = [PyPDFLoader(pdf_name)]
+    index = VectorstoreIndexCreator(
+        embedding = HuggingFaceEmbeddings(model_name = 'all-MiniLM-L12-v2'),
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size = 1000, chunk_overlap = 100),
+    ).from_loaders(loaders)
+    return index.vectorstore
 
 prompt = st.chat_input('Pass your prompt here!')
 
