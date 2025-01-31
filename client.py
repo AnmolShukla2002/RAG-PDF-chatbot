@@ -19,7 +19,7 @@ if prompt:
     st.session_state.messages.append({'role': 'user', 'content': prompt})
 
     groq_system_prompt = ChatPromptTemplate.from_template(
-        "You are very smart at everything, you always give the best, the most accurate and most precise answers. Answer the following Question: {user_prompt}. Start the answer directly. No small talk please."
+        "You are very smart at everything, you always give the best, the most accurate and most precise answers. Answer the following question: {user_prompt}. Start the answer directly. No small talk please."
     )
 
     model = 'llama3-8b-8192'
