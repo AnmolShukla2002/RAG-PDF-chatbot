@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+python-dotenv
+langchain
+langchain-google-genai
+pypdf
+sentence-transformers
+faiss-cpu
+huggingface-hub
