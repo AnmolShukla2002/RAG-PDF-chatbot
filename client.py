@@ -10,6 +10,9 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.document_loaders import PyPDFLoader
 from langchain.indexes import VectorstoreIndexCreator
 from langchain.chains import RetrievalQA
+from dotenv import load_dotenv
+
+load_dotenv()  # Load environment variables from .env file
 
 # 🔹 Set Page Title
 st.set_page_config(page_title="RAG Chatbot", layout="wide")
@@ -104,7 +107,7 @@ if prompt:
         "You are very smart at everything, you always give the best, the most accurate and most precise answers. Answer the following question: {user_prompt}. Start the answer directly. No small talk please."
     )
 
-    model = "gemini-pro"
+    model = "gemini-2.0-flash"
     gemini_chat = ChatGoogleGenerativeAI(
         model=model,
         google_api_key=os.environ.get("GOOGLE_API_KEY"),
